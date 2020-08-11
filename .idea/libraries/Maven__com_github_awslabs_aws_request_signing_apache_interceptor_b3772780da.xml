@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.awslabs:aws-request-signing-apache-interceptor:b3772780da">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/awslabs/aws-request-signing-apache-interceptor/b3772780da/aws-request-signing-apache-interceptor-b3772780da.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/awslabs/aws-request-signing-apache-interceptor/b3772780da/aws-request-signing-apache-interceptor-b3772780da-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/awslabs/aws-request-signing-apache-interceptor/b3772780da/aws-request-signing-apache-interceptor-b3772780da-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
