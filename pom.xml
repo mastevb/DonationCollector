@@ -25,6 +25,7 @@
         <javaVersion>1.8</javaVersion>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <aws-java-sdk.version>1.11.221</aws-java-sdk.version>
     </properties>
 
 
@@ -40,29 +41,14 @@
             <version>20190722</version>
         </dependency>
         <dependency>
-            <groupId>com.monkeylearn</groupId>
-            <artifactId>monkeylearn-java</artifactId>
-            <version>0.1.5</version>
-        </dependency>
-        <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.18</version>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.12</version>
         </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -96,7 +82,7 @@
             <artifactId>aws-request-signing-apache-interceptor</artifactId>
             <version>b3772780da</version>
         </dependency>
-        </dependencies>
+    </dependencies>
     <build>
         <finalName>dc</finalName>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven
