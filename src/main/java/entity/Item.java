@@ -1,10 +1,8 @@
 package entity;
 
 import java.util.Date;
-import java.util.Set;
 
 import org.elasticsearch.common.geo.GeoPoint;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Item {

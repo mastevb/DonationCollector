@@ -1,6 +1,5 @@
 package esDB;
 
-import entity.Item;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
 import org.elasticsearch.action.index.IndexRequest;
@@ -15,19 +14,16 @@ import com.amazonaws.http.AWSRequestSigningApacheInterceptor;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AmazonESSetUp {
 
     private static String serviceName = "es";
     private static String region = "us-east-2";
     private static String aesEndpoint = "https://search-donationcollector-7tn3xplzj34wls3iio7j5aeapi.us-east-2.es.amazonaws.com";
-    private static String index = "item";
     private static String type = "_doc";
     private static String id = "1";
 
@@ -36,25 +32,45 @@ public class AmazonESSetUp {
     public static void main(String[] args) throws IOException {
         RestHighLevelClient esClient = esClient(serviceName, region);
 
-        XContentBuilder builder = XContentFactory.jsonBuilder();
-        builder.startObject();
+        // Creates Item Index
+        XContentBuilder itemBuilder = XContentFactory.jsonBuilder();
+        itemBuilder.startObject();
         {
-            builder.field("name", "string");
-            builder.field("residentID", "string");
-            builder.field("description", "string");
-            builder.field("imageUrl", "string");
-            builder.field("address", "string");
-            builder.field("location", new GeoPoint());
-            builder.field("NGOID", "string");
-            builder.field("scheduleID", "string");
-            builder.timeField("scheduleTime", new Date());
-            builder.field("status", 0);
+            itemBuilder.field("ItemID", "keyword").field("index", "true");
+            itemBuilder.field("name", "string");
+            itemBuilder.field("residentID", "keyword");
+            itemBuilder.field("description", "string");
+            itemBuilder.field("imageUrl", "string");
+            itemBuilder.field("address", "string");
+            itemBuilder.field("location", new GeoPoint());
+            itemBuilder.field("NGOID", "keyword");
+            itemBuilder.field("scheduleID", "keyword");
+            itemBuilder.timeField("scheduleTime", new Date());
+            itemBuilder.field("status", 0);
         }
-        builder.endObject();
+        itemBuilder.endObject();
 
         // Form the indexing request, send it, and print the response
-        IndexRequest request = new IndexRequest(index, type, id).source(builder);
+        IndexRequest request = new IndexRequest("item", type, id).source(itemBuilder);
         IndexResponse response = esClient.index(request, RequestOptions.DEFAULT);
+
+
+        // Creates Schedule Index
+        XContentBuilder scheduleBuilder = XContentFactory.jsonBuilder();
+        scheduleBuilder.startObject();
+        {
+            scheduleBuilder.field("scheduleID", "keyword");
+            scheduleBuilder.field("NGOID", "keyword");
+            scheduleBuilder.field("ITEM_ID[]", new ArrayList<String>());
+            scheduleBuilder.field("scheduleTime", new Date());
+            scheduleBuilder.field("status", 0);
+        }
+        scheduleBuilder.endObject();
+
+        // Form the indexing request, send it, and print the response
+        request = new IndexRequest("schedule", type, id).source(scheduleBuilder);
+        response = esClient.index(request, RequestOptions.DEFAULT);
+
         System.out.println(response.toString());
     }
 
