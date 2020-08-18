@@ -7,11 +7,13 @@ import org.json.JSONObject;
 
 public class Item {
     private String name;
+    private String itemID;
     private String residentID;
     private String description;
     private String imageUrl;
     private String address;
     private GeoPoint location;
+ // private Date postTime;
 
     private String NGOID;
     private String scheduleID;
@@ -57,14 +59,25 @@ public class Item {
     public int getStatus() {
         return status;
     }
+    
+    public String getItemID() {
+        return itemID;
+    }
+
+    /* public Date getpostTime() {
+        return postTime;
+    } */
 
     private Item(ItemBuilder builder) {
         this.name = builder.name;
+        this.itemID = builder.itemID;
         this.residentID = builder.residentID;
         this.description = builder.description;
         this.imageUrl = builder.imageUrl;
         this.address = builder.address;
         this.location = builder.location;
+     // this.postTime = builder.postTime;
+        
         this.NGOID = builder.NGOID;
         this.scheduleID = builder.scheduleID;
         this.scheduleTime = builder.scheduleTime;
@@ -75,12 +88,15 @@ public class Item {
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         obj.put("name", name);
+        obj.put("itemID", itemID);
         obj.put("residentID", residentID);
         obj.put("description", description);
         obj.put("imageUrl", imageUrl);
         obj.put("address", address);
         obj.put("location", location);
         obj.put("NGOID", NGOID);
+     // obj.put("postTime", postTime);
+        
         obj.put("scheduleTime", scheduleTime);
         obj.put("scheduleID", scheduleID);
         obj.put("item status", status);
@@ -89,11 +105,13 @@ public class Item {
 
     public static class ItemBuilder {
         private String name;
+        private String itemID;
         private String residentID;
         private String description;
         private String imageUrl;
         private String address;
         private GeoPoint location;
+     // private Date postTime;
 
         private String NGOID;
         private String scheduleID;
@@ -144,5 +162,13 @@ public class Item {
         public void setStatus(int status) {
             this.status = status;
         }
+        
+        public void setItemID(String id) {
+            this.itemID = id;
+        }
+
+        /* public void setPostTime(Date postTime) {
+            this.postTime = postTime;
+        } */
     }
 }
