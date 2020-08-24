@@ -15,8 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.http.HttpRequest;
 import org.apache.log4j.Logger;
@@ -61,71 +63,29 @@ public class RpcHelper {
     
     // Parses request and get post item
     public static Item parsePostItem(HttpServletRequest request, String filePath) throws UnsupportedEncodingException {
-    	// Parse multipart content
-    	DiskFileItemFactory factory = new DiskFileItemFactory();   	   
-        // maximum size that will be stored in memory
-        factory.setSizeThreshold(MAX_MEM_SIZE);    
-        // Location to save data that is larger than maxMemSize.
-        factory.setRepository(new File(TEMP_PATH));
-        // Create a new file upload handler
-        ServletFileUpload upload = new ServletFileUpload(factory);    
-        // maximum file size to be uploaded.
-        upload.setSizeMax(MAX_FILE_SIZE);
-        
-        ItemBuilder builder = new ItemBuilder();
+    	ItemBuilder builder = new ItemBuilder();
         String[] address = new String[3];
-        String zip = "", fieldName = "", fileName = "", name = "";
-        File file = null;
+        String zip = "", fileName = "", name = "";
         
-        // Parse the request to get file items.
-        List<FileItem> fileItems = null;
-		try {
-			fileItems = upload.parseRequest(request);
-		} catch (FileUploadException e2) {
-			logger.error("Failed to parse the upload request.");
-		}  	
-        // Process the uploaded file items
-        Iterator<FileItem> i = fileItems.iterator();
-            
-        while (i.hasNext()) {     
-	        FileItem fi = (FileItem)i.next();
-	        fieldName = fi.getFieldName();	        
-			if (fieldName.equals("image")) {
-				fileName = fi.getName();       
-	            fileName = fileName.lastIndexOf("\\") >= 0 ? 
-	            		filePath + fileName.substring(fileName.lastIndexOf("\\")) : 
-	        			    filePath + fileName.substring(fileName.lastIndexOf("\\") + 1);
-		        file = new File(fileName);
-		        if (!file.exists()) {
-		        	try {
-						file.createNewFile();
-						logger.info("Successfully created temp file.");
-					} catch (IOException e) {
-						logger.error("Failed to create temp file.");
-					}
-		        }	        	
-		        try {	        	    
-		        	fi.write(file);
-		        	logger.info("Successfully uploaded Filename: " + fileName + " to the server.");
-		        } catch (Exception e) {
-		        	logger.error("Failed to write file to " + fileName + ".");
-		        }
-			} else if (fieldName.equals("name")) {
-				name = fi.getString("ascii");
-	        	builder.setName(name);
-			} else if (fieldName.equals("description")) {
-				builder.setDescription(fi.getString("ascii"));
-			} else if (fieldName.equals("address")) {
-				address[0] = fi.getString("ascii");
-			} else if (fieldName.equals("city")) {
-				address[1] = fi.getString("ascii");
-			} else if (fieldName.equals("state")) {
-				address[2] = fi.getString("ascii");
-			} else if (fieldName.equals("zip")) {
-				zip = fi.getString("ascii");
-			} else {
-				logger.error("Get invalid field name.");
-			}
+        name = request.getParameter("name");
+        builder.setName(name);
+        builder.setDescription(request.getParameter("description"));
+                        
+        Part image = null;
+        try {
+			image = request.getPart("image");
+		} catch (IOException | ServletException e2) {
+			logger.error("Fail to get the image from the request.");
+		}
+        fileName = image.getSubmittedFileName();
+        fileName = fileName.lastIndexOf("\\") >= 0 ? 
+        		filePath + fileName.substring(fileName.lastIndexOf("\\")) : 
+    			    filePath + fileName.substring(fileName.lastIndexOf("\\") + 1);
+        try {	        	    
+        	image.write(fileName);
+        	logger.info("Successfully uploaded Filename: " + fileName + " to the server.");
+        } catch (Exception e) {
+        	logger.error("Failed to write file to " + fileName + ".");
         }
         
         Date postTime = null;
@@ -133,23 +93,26 @@ public class RpcHelper {
 			postTime = getCurDate();
 		} catch (ParseException e1) {
 			logger.error("Failed to get the post time");
-			e1.printStackTrace();
 		}
 		builder.setPostTime(postTime);
 
         String id = idGenerator();
         builder.setItemID(id);
         
-        S3Client s3Client = new S3Client();        
+        S3Client s3Client = new S3Client();
+        String imageUrl = "";
         try {
-			builder.setImageUrl(s3Client.putObject(file, id, name, postTime));
+			imageUrl = s3Client.putObject(new File(fileName), id, name, postTime);
 		} catch (IOException e) {
-			builder.setImageUrl("");
-			e.printStackTrace();	
+			logger.error("Failed to get image URL.");
 		}
-        
+        builder.setImageUrl(imageUrl);
         builder.setResidentID(getUsername());
         
+        address[0] = request.getParameter("address");
+        address[1] = request.getParameter("city");
+        address[2] = request.getParameter("state");
+        zip = request.getParameter("zip");
         String addr = String.join(", ", address);
         builder.setAddress(addr + " " + zip);
         builder.setLocation(Converter.getGeoPointFromStr(addr));
