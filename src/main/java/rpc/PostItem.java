@@ -3,6 +3,7 @@ package rpc;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,7 @@ import esDB.DBConnection;
 /**
  * Servlet implementation class PostItem
  */
-
+@MultipartConfig
 public class PostItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(PostItem.class);
@@ -43,7 +44,7 @@ public class PostItem extends HttpServlet {
 		}
 		
 		Item item = null;		
-		item = RpcHelper.parsePostItem(request, uploadPath);        
+		item = RpcHelper.parsePostItem(request, uploadPath);
         if (item == null) {
         	logger.error("Got no item.");
         	RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
