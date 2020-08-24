@@ -35,9 +35,9 @@ public class CognitoClient {
             try {
                 JSONObject bodyObject = new JSONObject(body);
                 content = bodyObject.getString(key);
-                logger.info("Get " + key + " = " + content);
+                logger.info("Successfully got " + key + " = " + content);
             } catch (JSONException err) {
-                logger.error("Failed to get content from token.");
+                logger.error("Failed to get " + key + " from token.");
             }
         }catch (JWTVerificationException e){
         	logger.info("Token is wrong");
