@@ -10,9 +10,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -20,15 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.http.HttpRequest;
 import org.apache.log4j.Logger;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import entity.Item;
@@ -37,9 +28,10 @@ import entity.Schedule;
 import entity.Schedule.ScheduleBuilder;
 import map.Converter;
 import s3.S3Client;
+import external.CognitoClient;
 
 public class RpcHelper {
-	private static Logger logger = Logger.getLogger(RpcHelper.class);
+	private static final Logger logger = Logger.getLogger(RpcHelper.class);
 	// The valid period of the URL
 	public static final int MAX_FILE_SIZE = 2 * 1024 * 1024;
 	// TODO: change the maximum memory size according to the sever
@@ -107,7 +99,13 @@ public class RpcHelper {
 			logger.error("Failed to get image URL.");
 		}
         builder.setImageUrl(imageUrl);
-        builder.setResidentID(getUsername());
+        
+        String username = getUsername(request);
+        if (username == null) {
+        	logger.error("Failed to get username.");
+        	return (Item) null;
+        }
+        builder.setResidentID(username);
         
         address[0] = request.getParameter("address");
         address[1] = request.getParameter("city");
@@ -157,9 +155,15 @@ public class RpcHelper {
     }
     
     // Gets username from Cognito
-    public static String getUsername() {
-    	
-        return "";
+    public static String getUsername(HttpServletRequest request) {
+    	// Get token in header
+    	String username = "";
+    	String authorization = request.getHeader("Authorization");
+    	String tokenStr = authorization.substring("Bearer ".length());
+    	// tokenStr = CognitoClient.generateToken();  // for tests
+    	// Decode token
+    	username = CognitoClient.getContentFromToken(tokenStr, "sub");
+        return username;
     }
     
     // Get current date
