@@ -86,26 +86,41 @@
             <artifactId>aws-request-signing-apache-interceptor</artifactId>
             <version>b3772780da</version>
         </dependency>
-	     <dependency>
+	    <dependency>
 	    	<groupId>com.amazonaws</groupId>
 		    <artifactId>aws-java-sdk-ec2</artifactId>
 		    <version>1.11.63</version>
-		  </dependency>
-		  <dependency>
+		</dependency>
+		<dependency>
 		    <groupId>com.amazonaws</groupId>
 		    <artifactId>aws-java-sdk-s3</artifactId>
 		    <version>1.11.63</version>
-		  </dependency>
-		  <dependency>
+		</dependency>
+		<dependency>
 		    <groupId>com.amazonaws</groupId>
 		    <artifactId>aws-java-sdk-dynamodb</artifactId>
 		    <version>1.11.63</version>
-		  </dependency>
-		  <dependency>
+		</dependency>
+		<dependency>
 		    <groupId>log4j</groupId>
 		    <artifactId>log4j</artifactId>
 		    <version>1.2.17</version>
-		  </dependency>	  
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt</artifactId>
+		    <version>0.9.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.auth0</groupId>
+		    <artifactId>java-jwt</artifactId>
+		    <version>3.10.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.auth0</groupId>
+		    <artifactId>jwks-rsa</artifactId>
+		    <version>0.12.0</version>
+		</dependency>
     </dependencies>
     <build>
         <finalName>dc</finalName>
