@@ -162,7 +162,7 @@ public class RpcHelper {
     	String tokenStr = authorization.substring("Bearer ".length());
     	// tokenStr = CognitoClient.generateToken();  // for tests
     	// Decode token
-    	username = CognitoClient.getContentFromToken(tokenStr, "sub");
+    	username = CognitoClient.getContentFromToken(tokenStr, "cognito:username");
         return username;
     }
     
