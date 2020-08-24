@@ -1,7 +1,5 @@
 package external;
 
-import java.util.Date;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -9,7 +7,6 @@ import org.json.JSONObject;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
@@ -47,23 +44,4 @@ public class CognitoClient {
         }
 	    return content;
 	}
-	
-	/*
-	public static String generateToken() {
-		String token = null;
-		try {
-			Algorithm algorithm = Algorithm.RSA256(keyProvider.getPublicKeyById(CognitoUtil.SAMPLE_PUBLIC_KID), null);
-		    token = JWT.create()		        		        
-		        .withExpiresAt(new Date(4102462800L))
-		        .withIssuedAt(new Date(1598290659L))
-		        .withIssuer("auth0")
-		        .withJWTId("0987654321")
-		        .withKeyId(CognitoUtil.SAMPLE_PUBLIC_KID)
-		        .withSubject("1234-5678-9012-3456-7890")
-		        .sign(algorithm);
-		} catch (JWTCreationException exception){
-		    logger.error("Invalid Signing configuration / Couldn't convert Claims.");
-		}
-		return token;
-	}*/
 }
