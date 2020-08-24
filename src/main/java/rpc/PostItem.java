@@ -1,18 +1,14 @@
 package rpc;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.IOUtils;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.rest.RestStatus;
+import org.apache.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.json.JSONObject;
 
 import entity.Item;
@@ -24,6 +20,9 @@ import esDB.DBConnection;
 
 public class PostItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(PostItem.class);
+	// TODO: Update the upload path according to the server
+	private static final String uploadPath = "D:\\LaiOffer\\Project_Class\\Apache-Tomcat\\apache-tomcat-9.0.37\\webapps\\data\\";
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -37,33 +36,28 @@ public class PostItem extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession(false);
-        if (session == null) {
-            response.setStatus(403);
-            return;
+		if(!ServletFileUpload.isMultipartContent(request)) {
+			logger.error("Not a multipart content.");
+			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
+			return;
+		}
+		
+		Item item = null;		
+		item = RpcHelper.parsePostItem(request, uploadPath);        
+        if (item == null) {
+        	logger.error("Got no item.");
+        	RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
+        	return;
         }
-
-        JSONObject input = new JSONObject(IOUtils.toString(request.getReader()));
-        Item item = null;
-
-        try {
-            item = RpcHelper.parsePostItem(input);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+               
         DBConnection connection = new DBConnection();
-
-        if (item != null) {
-            IndexResponse indexResponse = connection.indexItem(item);
-            if (indexResponse != null && indexResponse.status() == RestStatus.OK) {
-                RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
-            } else {
-                RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
-            }
+        logger.info("Successfully established DB connection.");
+                   
+        if (connection.indexItem(item)) {
+            logger.info("Successfully saved the item in DB.");
+            RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
         } else {
             RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
         }
 	}
-
 }

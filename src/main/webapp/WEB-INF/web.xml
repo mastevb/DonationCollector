@@ -3,7 +3,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Donation Collector Web Application</display-name>
+  <display-name>Donation Collector Web Application</display-name>  
   <servlet>
   	<servlet-name>PostItem</servlet-name>
   	<display-name>PostItem</display-name>
