@@ -1,32 +1,26 @@
 package map;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.json.JSONObject;
 
 import external.GeoCodingClient;
 
 public class Converter {
-	// converts JSONObject to String
-    public static String getAddressStr(JSONObject address) {
-        if (address == null) {
-            return (String)null;
-        }
-        String addr = address.getString("address");
-        String city = address.getString("city");
-        String state = address.getString("state");
-        String zip = address.getString("zip");
-        return addr + ", " + city + ", " + state + " " + zip;
-    }
-
+	private static Logger logger = Logger.getLogger(Converter.class);
     // converts JSONObject to GeoPoint
-    public static GeoPoint getGeoPoint(JSONObject address) {
+    public static GeoPoint getGeoPointFromObj(String address) {
+        JSONObject loc = GeoCodingClient.getLocation(address.replaceAll(" ", "%20"));
+        return new GeoPoint(loc.getFloat("lat"), loc.getFloat("lng"));
+    }
+    
+    // converts String to GeoPoint
+    public static GeoPoint getGeoPointFromStr(String address) {
         if (address == null) {
             return null;
         }
-        String addr = address.getString("address") + " "
-                + address.getString("city") + " "
-                + address.getString("state");
-        JSONObject loc = GeoCodingClient.getLocation(addr.replaceAll(" ", "%20"));
+        address = address.replaceAll(" ", "+");
+        JSONObject loc = GeoCodingClient.getLocation(address);
         return new GeoPoint(loc.getFloat("lat"), loc.getFloat("lng"));
     }
 }
