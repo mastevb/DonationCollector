@@ -14,28 +14,10 @@
   	<servlet-class>rpc.PostItem</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>test</servlet-name>
-  	<display-name>test</display-name>
-  	<description></description>
-  	<servlet-class>rpc.test</servlet-class>
-  </servlet>
-  <servlet>
   	<servlet-name>DeleteItem</servlet-name>
   	<display-name>DeleteItem</display-name>
   	<description></description>
   	<servlet-class>rpc.DeleteItem</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>test2</servlet-name>
-  	<display-name>test2</display-name>
-  	<description></description>
-  	<servlet-class>rpc.test2</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>test3</servlet-name>
-  	<display-name>test3</display-name>
-  	<description></description>
-  	<servlet-class>rpc.test3</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>CompleteSchdule</servlet-name>
@@ -44,47 +26,25 @@
   	<servlet-class>rpc.CompleteSchdule</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>test4</servlet-name>
-  	<display-name>test4</display-name>
+  	<servlet-name>GetItem</servlet-name>
+  	<display-name>GetItem</display-name>
   	<description></description>
-  	<servlet-class>rpc.test4</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>test5</servlet-name>
-  	<display-name>test5</display-name>
-  	<description></description>
-  	<servlet-class>rpc.test5</servlet-class>
+  	<servlet-class>rpc.GetItem</servlet-class>
   </servlet>
   <servlet-mapping>
   	<servlet-name>PostItem</servlet-name>
   	<url-pattern>/donor/new_item</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>test</servlet-name>
-  	<url-pattern>/test</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
   	<servlet-name>DeleteItem</servlet-name>
   	<url-pattern>/donor/delete_item</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>test2</servlet-name>
-  	<url-pattern>/test2</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>test3</servlet-name>
-  	<url-pattern>/test3</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>CompleteSchdule</servlet-name>
   	<url-pattern>/ngo/complete_schedule</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>test4</servlet-name>
-  	<url-pattern>/test4</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>test5</servlet-name>
-  	<url-pattern>/test5</url-pattern>
+  	<servlet-name>GetItem</servlet-name>
+  	<url-pattern>/donor/my_item</url-pattern>
   </servlet-mapping>
 </web-app>
