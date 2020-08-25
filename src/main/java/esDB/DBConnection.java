@@ -1,17 +1,26 @@
 package esDB;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 
 import com.amazonaws.auth.AWS4Signer;
@@ -21,6 +30,9 @@ import com.amazonaws.http.AWSRequestSigningApacheInterceptor;
 
 import entity.Item;
 import entity.Schedule;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 public class DBConnection {
 
@@ -93,5 +105,49 @@ public class DBConnection {
         HttpRequestInterceptor interceptor = new AWSRequestSigningApacheInterceptor(serviceName, signer, credentialsProvider);
         return new RestHighLevelClient(RestClient.builder(HttpHost.create(esDBUtil.aesEndpoint))
                 .setHttpClientConfigCallback(hacb -> hacb.addInterceptorLast(interceptor)));
+    }
+
+    public List<Schedule> getSchedule(String username) throws IOException {
+        List<Schedule> result = new ArrayList<>();
+        RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+        logger.info("Successfully built client for DB.");
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(QueryBuilders.termQuery("username", "username"));
+        sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices("schedule");
+        searchRequest.source(sourceBuilder);
+        SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+        // get access to the returned documents
+        SearchHits hits = searchResponse.getHits();
+        SearchHit[] searchHits = hits.getHits();
+        // build and add
+        for (SearchHit hit : searchHits) {
+            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+            Schedule.ScheduleBuilder builder = new Schedule.ScheduleBuilder();
+            // build
+            builder.setNGOID((String) sourceAsMap.get("NGOID"));
+            Object ids = sourceAsMap.get("ITEM_ID[]");
+            ArrayList<String> itemIds = new ArrayList<>();
+            if (ids instanceof ArrayList<?>) {
+                for (int i = 0; i < ((ArrayList<?>) ids).size(); i++) {
+                    // Still not enough for a type.
+                    Object o = ((ArrayList<?>) ids).get(i);
+                    if (o instanceof String) {
+                        // Here we go!
+                        String v = (String) o;
+                        // use v
+                        itemIds.add(v);
+                    }
+                }
+            }
+            builder.setItemIDList(itemIds);
+            builder.setScheduleID((String) sourceAsMap.get("Schedule_ID"));
+            builder.setScheduleTime((Date) sourceAsMap.get("time"));
+            builder.setStatus((int) sourceAsMap.get("status"));
+            Schedule s = builder.build();
+            result.add(s);
+        }
+        return result;
     }
 }

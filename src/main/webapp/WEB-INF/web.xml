@@ -17,4 +17,15 @@
   	<servlet-name>PostItem</servlet-name>
   	<url-pattern>/donor/new_item</url-pattern>
   </servlet-mapping>
+    <servlet>
+        <servlet-name>MySchedule</servlet-name>
+        <display-name>MySchedule</display-name>
+        <description></description>
+        <servlet-class>rpc.MySchedule</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MySchedule</servlet-name>
+        <url-pattern>/ngo/my_schedule</url-pattern>
+    </servlet-mapping>
+
 </web-app>
