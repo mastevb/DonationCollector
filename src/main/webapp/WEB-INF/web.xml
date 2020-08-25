@@ -4,6 +4,9 @@
 
 <web-app>
   <display-name>Donation Collector Web Application</display-name>
+  <listener>
+  	<listener-class>external.IdleAWSConnectionListener</listener-class>
+  </listener>  
   <servlet>
   	<servlet-name>PostItem</servlet-name>
   	<display-name>PostItem</display-name>

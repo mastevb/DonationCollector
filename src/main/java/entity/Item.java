@@ -13,7 +13,7 @@ public class Item {
     private String imageUrl;
     private String address;
     private GeoPoint location;
- // private Date postTime;
+    private Date postTime;
 
     private String NGOID;
     private String scheduleID;
@@ -64,9 +64,9 @@ public class Item {
         return itemID;
     }
 
-    /* public Date getpostTime() {
+    public Date getPostTime() {
         return postTime;
-    } */
+    }
 
     private Item(ItemBuilder builder) {
         this.name = builder.name;
@@ -76,7 +76,7 @@ public class Item {
         this.imageUrl = builder.imageUrl;
         this.address = builder.address;
         this.location = builder.location;
-     // this.postTime = builder.postTime;
+        this.postTime = builder.postTime;
         
         this.NGOID = builder.NGOID;
         this.scheduleID = builder.scheduleID;
@@ -95,7 +95,7 @@ public class Item {
         obj.put("address", address);
         obj.put("location", location);
         obj.put("NGOID", NGOID);
-     // obj.put("postTime", postTime);
+        obj.put("postTime", postTime);
         
         obj.put("scheduleTime", scheduleTime);
         obj.put("scheduleID", scheduleID);
@@ -111,7 +111,7 @@ public class Item {
         private String imageUrl;
         private String address;
         private GeoPoint location;
-     // private Date postTime;
+        private Date postTime;
 
         private String NGOID;
         private String scheduleID;
@@ -167,8 +167,8 @@ public class Item {
             this.itemID = id;
         }
 
-        /* public void setPostTime(Date postTime) {
+        public void setPostTime(Date postTime) {
             this.postTime = postTime;
-        } */
+        }
     }
 }
