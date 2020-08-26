@@ -2,7 +2,9 @@
 package esDB;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpHost;
@@ -59,7 +61,7 @@ public class DBConnection {
             builder.field("postTime", item.getPostTime());
             builder.field("NGOID", item.getNGOID());
             builder.field("scheduleID", item.getScheduleID());
-            builder.timeField("scheduleTime", item.getScheduleTime());
+            builder.field("scheduleTime", item.getScheduleTime());
             builder.field("status", item.getStatus());
         }
         builder.endObject();
@@ -106,9 +108,9 @@ public class DBConnection {
 		UpdateByQueryRequest updateRequest = new UpdateByQueryRequest(esDBUtil.index);
 		// search query
 		StringBuilder sb = new StringBuilder();
-		
+//		String time = new SimpleDateFormat("yyyy-mm-dd").format(scheduleTime);
 		for(String item : items) {
-			sb.append("if (ctx._source.scheduleID == '" + item + "') {ctx._source.status=1; ctx._source.scheduleId='" + scheduleId + "'; ctx._source.scheduleTime='" + scheduleTime +"'; ctx._source.NGOID='" + NGOID + "';}");
+			sb.append("if (ctx._source.itemID == '" + item + "') {ctx._source.status=1; ctx._source.scheduleID='" + scheduleId + "'; ctx._source.scheduleTime='" + scheduleTime +"'; ctx._source.NGOID='" + NGOID + "';}");
 		}
 		
 		updateRequest.setScript(new Script(ScriptType.INLINE, "painless", sb.toString(), Collections.emptyMap()));

@@ -22,8 +22,8 @@ import java.util.Date;
 public class AmazonESSetUp {
 
     private static String serviceName = "es";
-    private static String region = "us-east-2";
-    private static String aesEndpoint = "https://search-donationcollector-7tn3xplzj34wls3iio7j5aeapi.us-east-2.es.amazonaws.com";
+    private static String region = "us-west-2";
+    private static String aesEndpoint = "https://search-donationcollector-azytnztkxuwh625uythsxbxviy.us-west-2.es.amazonaws.com";
     private static String type = "_doc";
     private static String id = "1";
 
@@ -45,7 +45,7 @@ public class AmazonESSetUp {
             itemBuilder.field("location", new GeoPoint());
             itemBuilder.field("NGOID", "keyword");
             itemBuilder.field("scheduleID", "keyword");
-            itemBuilder.timeField("scheduleTime", new Date());
+            itemBuilder.field("scheduleTime", "string");
             itemBuilder.field("status", 0);
         }
         itemBuilder.endObject();
@@ -62,7 +62,7 @@ public class AmazonESSetUp {
             scheduleBuilder.field("scheduleID", "keyword");
             scheduleBuilder.field("NGOID", "keyword");
             scheduleBuilder.field("ITEM_ID[]", new ArrayList<String>());
-            scheduleBuilder.field("scheduleTime", new Date());
+            scheduleBuilder.field("scheduleTime", "string");
             scheduleBuilder.field("status", 0);
         }
         scheduleBuilder.endObject();

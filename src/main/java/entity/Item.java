@@ -13,7 +13,7 @@ public class Item {
     private String imageUrl;
     private String address;
     private GeoPoint location;
-    private Date postTime;
+    private String postTime;
 
     private String NGOID;
     private String scheduleID;
@@ -64,7 +64,7 @@ public class Item {
         return itemID;
     }
 
-    public Date getPostTime() {
+    public String getPostTime() {
         return postTime;
     }
 
@@ -111,7 +111,7 @@ public class Item {
         private String imageUrl;
         private String address;
         private GeoPoint location;
-        private Date postTime;
+        private String postTime;
 
         private String NGOID;
         private String scheduleID;
@@ -167,8 +167,8 @@ public class Item {
             this.itemID = id;
         }
 
-        public void setPostTime(Date postTime) {
-            this.postTime = postTime;
+        public void setPostTime(String curTime) {
+            this.postTime = curTime;
         }
     }
 }

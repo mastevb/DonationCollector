@@ -2,6 +2,7 @@ package rpc;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import entity.Schedule;
@@ -49,7 +51,12 @@ public class PostSchedule extends HttpServlet {
 		//build schedule obj
 		Schedule schedule = null;
 		
-		schedule = RpcHelper.parsePostSchedule(request);
+		try {
+			schedule = RpcHelper.parsePostSchedule(request);
+		} catch (JSONException | IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		DBConnection connection = new DBConnection();
 		

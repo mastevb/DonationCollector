@@ -78,8 +78,8 @@ public class Schedule {
             ItemIDList = items;
         }
 
-        public void setScheduleTime(String string) {
-            this.scheduleTime = string;
+        public void setScheduleTime(String scheduleDate) {
+            this.scheduleTime = scheduleDate;
         }
 
         public void setStatus(int status) {

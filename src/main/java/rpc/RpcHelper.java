@@ -89,19 +89,20 @@ public class RpcHelper {
 		} catch (ParseException e1) {
 			logger.error("Failed to get the post time");
 		}
-		builder.setPostTime(postTime);
+		String curTime = new SimpleDateFormat("yyyy-MM-dd").format(postTime);
+		builder.setPostTime(curTime);
 
         String id = idGenerator();
         builder.setItemID(id);
         
-        S3Client s3Client = new S3Client();
-        String imageUrl = "";
-        try {
-			imageUrl = s3Client.putObject(new File(fileName), id, name, postTime);
-		} catch (IOException e) {
-			logger.error("Failed to get image URL.");
-		}
-        builder.setImageUrl(imageUrl);
+//        S3Client s3Client = new S3Client();
+//        String imageUrl = "";
+//        try {
+//			imageUrl = s3Client.putObject(new File(fileName), id, name, postTime);
+//		} catch (IOException e) {
+//			logger.error("Failed to get image URL.");
+//		}
+        builder.setImageUrl("imageUrl");
         
         String username = getUsername(request);
         if (username == null) {
@@ -120,7 +121,7 @@ public class RpcHelper {
         
         builder.setNGOID("");
         builder.setScheduleID("");
-        builder.setScheduleTime("");
+        builder.setScheduleTime(null);
         builder.setStatus(0);
 
         return builder.build();
@@ -174,7 +175,7 @@ public class RpcHelper {
 
     
     //parse request and get schedule obj
-	public static Schedule parsePostSchedule(HttpServletRequest request) throws JSONException, IOException {
+	public static Schedule parsePostSchedule(HttpServletRequest request) throws JSONException, IOException, ParseException {
 		
 		JSONObject input = new JSONObject(IOUtils.toString(request.getReader()));
 		JSONArray array = input.getJSONArray("itemIds");
