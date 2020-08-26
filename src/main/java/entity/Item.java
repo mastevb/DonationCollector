@@ -1,7 +1,5 @@
 package entity;
 
-import java.util.Date;
-
 import org.elasticsearch.common.geo.GeoPoint;
 import org.json.JSONObject;
 
@@ -13,11 +11,11 @@ public class Item {
     private String imageUrl;
     private String address;
     private GeoPoint location;
-    private Date postTime;
+    private String postTime;
 
     private String NGOID;
     private String scheduleID;
-    private Date scheduleTime;
+    private String scheduleTime;
     private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
 
     public String getName() {
@@ -52,7 +50,7 @@ public class Item {
         return scheduleID;
     }
 
-    public Date getScheduleTime() {
+    public String getScheduleTime() {
         return scheduleTime;
     }
 
@@ -64,7 +62,7 @@ public class Item {
         return itemID;
     }
 
-    public Date getPostTime() {
+    public String getPostTime() {
         return postTime;
     }
 
@@ -111,11 +109,11 @@ public class Item {
         private String imageUrl;
         private String address;
         private GeoPoint location;
-        private Date postTime;
+        private String postTime;
 
         private String NGOID;
         private String scheduleID;
-        private Date scheduleTime;
+        private String scheduleTime;
         private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
 
 
@@ -155,7 +153,7 @@ public class Item {
             this.scheduleID = scheduleID;
         }
 
-        public void setScheduleTime(Date scheduleTime) {
+        public void setScheduleTime(String scheduleTime) {
             this.scheduleTime = scheduleTime;
         }
 
@@ -167,7 +165,7 @@ public class Item {
             this.itemID = id;
         }
 
-        public void setPostTime(Date postTime) {
+        public void setPostTime(String postTime) {
             this.postTime = postTime;
         }
     }

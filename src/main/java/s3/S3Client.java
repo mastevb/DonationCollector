@@ -2,6 +2,8 @@ package s3;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -45,7 +47,7 @@ public class S3Client {
         logger.info("Successfully built S3 client.");
 	}
 	
-	public String putObject(File file, String key, String title, Date postTime) throws IOException {
+	public String putObject(File file, String key, String title, String postTime) throws IOException, ParseException {
 		String imageUrl = null;		
 		if (file == null) {
 			logger.error("No input image.");
@@ -69,7 +71,7 @@ public class S3Client {
             
             // Set expiration date
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(postTime);
+            calendar.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(postTime));
             calendar.add(Calendar.DAY_OF_YEAR, S3Util.VALID_PERIOD); 
             urlRequest.setExpiration(calendar.getTime());
             

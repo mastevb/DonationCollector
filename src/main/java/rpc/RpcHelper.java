@@ -68,6 +68,7 @@ public class RpcHelper {
 			image = request.getPart("image");
 		} catch (IOException | ServletException e2) {
 			logger.error("Fail to get the image from the request.");
+			return (Item) null;
 		}
         fileName = image.getSubmittedFileName();
         fileName = fileName.lastIndexOf("\\") >= 0 ? 
@@ -78,14 +79,10 @@ public class RpcHelper {
         	logger.info("Successfully uploaded Filename: " + fileName + " to the server.");
         } catch (Exception e) {
         	logger.error("Failed to write file to " + fileName + ".");
+        	return (Item) null;
         }
         
-        Date postTime = null;
-		try {
-			postTime = getCurDate();
-		} catch (ParseException e1) {
-			logger.error("Failed to get the post time");
-		}
+        String postTime = getCurDate();
 		builder.setPostTime(postTime);
 
         String id = idGenerator();
@@ -97,6 +94,10 @@ public class RpcHelper {
 			imageUrl = s3Client.putObject(new File(fileName), id, name, postTime);
 		} catch (IOException e) {
 			logger.error("Failed to get image URL.");
+			return (Item) null;
+		} catch (ParseException e) {
+			logger.error("Failed to parse the post time.");
+			return (Item) null;
 		}
         builder.setImageUrl(imageUrl);
         
@@ -117,7 +118,7 @@ public class RpcHelper {
         
         builder.setNGOID("");
         builder.setScheduleID("");
-        builder.setScheduleTime(new Date());
+        builder.setScheduleTime("");
         builder.setStatus(0);
 
         return builder.build();
@@ -165,9 +166,8 @@ public class RpcHelper {
     }
     
     // Get current date
-    public static Date getCurDate() throws ParseException {
+    public static String getCurDate() {
     	ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of( "America/Los_Angeles" ));
-    	String time = zdt.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-    	return new SimpleDateFormat("MM/dd/yyyy").parse(time);
+    	return zdt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }
