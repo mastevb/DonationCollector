@@ -52,6 +52,24 @@
   	<description></description>
   	<servlet-class>rpc.test5</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>testCreate1</servlet-name>
+  	<display-name>testCreate1</display-name>
+  	<description></description>
+  	<servlet-class>rpc.testCreate1</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>testCreate2</servlet-name>
+  	<display-name>testCreate2</display-name>
+  	<description></description>
+  	<servlet-class>rpc.testCreate2</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>testCreate3</servlet-name>
+  	<display-name>testCreate3</display-name>
+  	<description></description>
+  	<servlet-class>rpc.testCreate3</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>PostItem</servlet-name>
   	<url-pattern>/donor/new_item</url-pattern>
@@ -83,5 +101,17 @@
   <servlet-mapping>
   	<servlet-name>test5</servlet-name>
   	<url-pattern>/test5</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>testCreate1</servlet-name>
+  	<url-pattern>/testCreate1</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>testCreate2</servlet-name>
+  	<url-pattern>/testCreate2</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>testCreate3</servlet-name>
+  	<url-pattern>/testCreate3</url-pattern>
   </servlet-mapping>
 </web-app>

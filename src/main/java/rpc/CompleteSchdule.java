@@ -55,8 +55,9 @@ public class CompleteSchdule extends HttpServlet {
 
 		if (scheduleID != null) {
 			// Get update response
-			boolean responseStatus = connection.MarkCompleteItem(scheduleID);
-			if (responseStatus) {
+			boolean itemResponseStatus = connection.MarkCompleteItem(scheduleID);
+			boolean ngoResponseStatus = connection.MarkCompleteNGO(scheduleID);
+			if (itemResponseStatus && ngoResponseStatus) {
 				response.getWriter().append("Succeed at: ").append(request.getContextPath());
 			} else {
 				response.getWriter().append("Failed at: ").append(request.getContextPath());
