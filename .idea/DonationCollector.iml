@@ -9,7 +9,7 @@
     <facet type="web" name="Web">
       <configuration>
         <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/apache-tomcat-9.0.37/webapps/examples/WEB-INF/web.xml" />
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/web.xml" />
         </descriptors>
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
@@ -168,6 +168,7 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util:9.0.30" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util-scan:9.0.30" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jaspic-api:9.0.30" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20190722" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.7" level="project" />

@@ -13,38 +13,19 @@
   	<description></description>
   	<servlet-class>rpc.PostItem</servlet-class>
   </servlet>
-  <servlet>
-  	<servlet-name>DeleteItem</servlet-name>
-  	<display-name>DeleteItem</display-name>
-  	<description></description>
-  	<servlet-class>rpc.DeleteItem</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>CompleteSchdule</servlet-name>
-  	<display-name>CompleteSchdule</display-name>
-  	<description></description>
-  	<servlet-class>rpc.CompleteSchdule</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>GetItem</servlet-name>
-  	<display-name>GetItem</display-name>
-  	<description></description>
-  	<servlet-class>rpc.GetItem</servlet-class>
-  </servlet>
   <servlet-mapping>
   	<servlet-name>PostItem</servlet-name>
   	<url-pattern>/donor/new_item</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>DeleteItem</servlet-name>
-  	<url-pattern>/donor/delete_item</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>CompleteSchdule</servlet-name>
-  	<url-pattern>/ngo/complete_schedule</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>GetItem</servlet-name>
-  	<url-pattern>/donor/my_item</url-pattern>
-  </servlet-mapping>
+    <servlet>
+        <servlet-name>MySchedule</servlet-name>
+        <display-name>MySchedule</display-name>
+        <description></description>
+        <servlet-class>rpc.MySchedule</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MySchedule</servlet-name>
+        <url-pattern>/ngo/my_schedule</url-pattern>
+    </servlet-mapping>
+
 </web-app>
