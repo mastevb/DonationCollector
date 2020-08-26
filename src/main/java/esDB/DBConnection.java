@@ -85,7 +85,7 @@ public class DBConnection {
 		// update request
 		UpdateByQueryRequest updateRequest = new UpdateByQueryRequest(esDBUtil.index);
 		// search query
-		String queryString = "if (ctx._source.scheduleID == '" + scheduleID + "') {ctx._source.status=1;}";
+		String queryString = "if (ctx._source.scheduleID == '" + scheduleID + "') {ctx._source.status=2;}";
 		updateRequest.setScript(new Script(ScriptType.INLINE, "painless", queryString, Collections.emptyMap()));
 		// execution
 		BulkByScrollResponse bulkResponse = esClient.updateByQuery(updateRequest, RequestOptions.DEFAULT);
@@ -101,7 +101,7 @@ public class DBConnection {
 	public boolean MarkCompleteNGO(String scheduleID) throws IOException {
 		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
 		// update request
-		UpdateByQueryRequest updateRequest = new UpdateByQueryRequest("test1");
+		UpdateByQueryRequest updateRequest = new UpdateByQueryRequest("schedule");
 		// search query
 		String queryString = "if (ctx._source.scheduleID == '" + scheduleID + "') {ctx._source.status=1}";
 		updateRequest.setScript(new Script(ScriptType.INLINE, "painless", queryString, Collections.emptyMap()));
