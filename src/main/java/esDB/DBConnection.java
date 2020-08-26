@@ -28,6 +28,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.UpdateByQueryRequest;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.SearchHit;
@@ -42,39 +43,71 @@ import com.amazonaws.http.AWSRequestSigningApacheInterceptor;
 
 import entity.Item;
 import entity.Item.ItemBuilder;
+import entity.Schedule;
+import esDB.esDBUtil;
+import org.apache.log4j.Logger;
 
 public class DBConnection {
-
 	static final AWSCredentialsProvider credentialsProvider = new DefaultAWSCredentialsProviderChain();
-
+	private static Logger logger = Logger.getLogger(DBConnection.class);
+	
 	public DBConnection() {
 	}
 
-	public IndexResponse indexItem(Item item) throws IOException {
-		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+	public boolean indexItem(Item item) throws IOException {
+        RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+        logger.info("Successfully built client for DB.");
 
-		XContentBuilder builder = XContentFactory.jsonBuilder();
-		builder.startObject();
-		{
-			builder.field("name", item.getName());
-			builder.field("itemID", item.getItemID());
-			builder.field("residentID", item.getResidentID());
-			builder.field("description", item.getDescription());
-			builder.field("imageUrl", item.getImageUrl());
-			builder.field("address", item.getAddress());
-			builder.field("location", item.getLocation());
-			// builder.field("postTime", item.getPostTime());
-			builder.field("NGOID", item.getNGOID());
-			builder.field("scheduleID", item.getScheduleID());
-			builder.timeField("scheduleTime", item.getScheduleTime());
-			builder.field("status", item.getStatus());
-		}
-		builder.endObject();
+        XContentBuilder builder = XContentFactory.jsonBuilder();
+        builder.startObject();
+        {
+            builder.field("name", item.getName());
+            builder.field("itemID", item.getItemID());
+            builder.field("residentID", item.getResidentID());
+            builder.field("description", item.getDescription());
+            builder.field("imageUrl", item.getImageUrl());
+            builder.field("address", item.getAddress());
+            builder.field("location", item.getLocation());
+            builder.field("postTime", item.getPostTime());
+            builder.field("NGOID", item.getNGOID());
+            builder.field("scheduleID", item.getScheduleID());
+            builder.timeField("scheduleTime", item.getScheduleTime());
+            builder.field("status", item.getStatus());
+        }
+        builder.endObject();
+        logger.info("Successfully built item.");
 
-		// Form the indexing request, send it, and print the response
-		IndexRequest request = new IndexRequest(esDBUtil.index, esDBUtil.type, item.getItemID()).source(builder);
-		return esClient.index(request, RequestOptions.DEFAULT);
-	}
+        // Form the indexing request, send it, and print the response
+        IndexRequest request = new IndexRequest(esDBUtil.index, esDBUtil.type, item.getItemID()).source(builder);
+        logger.info("Successfully built request.");
+        IndexResponse response = esClient.index(request, RequestOptions.DEFAULT);
+        
+        return response.status().equals(RestStatus.CREATED);
+    }
+    
+    public boolean indexSchedule(Schedule schedule) throws IOException {
+        RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+        logger.info("Successfully built client for DB.");
+
+        // Creates Schedule Index
+        XContentBuilder scheduleBuilder = XContentFactory.jsonBuilder();
+        scheduleBuilder.startObject();
+        {
+            scheduleBuilder.field("scheduleID", schedule.getScheduleID());
+            scheduleBuilder.field("NGOID", schedule.getNGOID());
+            scheduleBuilder.field("ITEM_ID[]", schedule.getItemIDList());
+            scheduleBuilder.field("scheduleTime", schedule.getScheduleTime());
+            scheduleBuilder.field("status", schedule.getStatus());
+        }
+        scheduleBuilder.endObject();
+
+        // Form the indexing request, send it, and print the response
+        IndexRequest request = new IndexRequest("schedule", esDBUtil.type, schedule.getScheduleID()).source(scheduleBuilder);
+        logger.info("Successfully built request.");
+        IndexResponse response = esClient.index(request, RequestOptions.DEFAULT);
+        
+        return response.status().equals(RestStatus.CREATED);
+    }
 
 	// Delete donation item - Lin
 	public boolean deleteDonorItem(String itemID) throws IOException {

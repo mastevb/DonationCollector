@@ -22,11 +22,12 @@ import java.util.Date;
 public class AmazonESSetUp {
 
     private static String serviceName = "es";
-    private static String region = "us-east-2";
-    private static String aesEndpoint = "https://search-donationcollector-7tn3xplzj34wls3iio7j5aeapi.us-east-2.es.amazonaws.com";
+    private static String region = "us-west-2";
+    private static String aesEndpoint = "https://search-donationcollector-azytnztkxuwh625uythsxbxviy.us-west-2.es.amazonaws.com";
     private static String type = "_doc";
     private static String id = "1";
-
+    private static int ITEM_ARRAY_SIZE = 100;
+    
     static final AWSCredentialsProvider credentialsProvider = new DefaultAWSCredentialsProviderChain();
 
     public static void main(String[] args) throws IOException {
@@ -61,7 +62,7 @@ public class AmazonESSetUp {
         {
             scheduleBuilder.field("scheduleID", "keyword");
             scheduleBuilder.field("NGOID", "keyword");
-            scheduleBuilder.field("ITEM_ID[]", new ArrayList<String>());
+            scheduleBuilder.field("ITEM_ID[]", "text");
             scheduleBuilder.field("scheduleTime", new Date());
             scheduleBuilder.field("status", 0);
         }
