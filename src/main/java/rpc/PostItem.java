@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import entity.Item;
 import esDB.DBConnection;
 
+import external.CognitoClient;
+
 /**
  * Servlet implementation class PostItem
  */
@@ -37,12 +39,21 @@ public class PostItem extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Verify the request type
 		if(!ServletFileUpload.isMultipartContent(request)) {
 			logger.error("Not a multipart content.");
 			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
 			return;
 		}
 		
+		// Verify the token
+		String tokenStr = CognitoClient.getTokenFromRequest(request);
+		if (!CognitoClient.verifyJwt(tokenStr)) {
+			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
+			return;
+		}
+		
+		// Parse request content and get post item
 		Item item = null;		
 		item = RpcHelper.parsePostItem(request, uploadPath);
         if (item == null) {
@@ -53,7 +64,8 @@ public class PostItem extends HttpServlet {
                
         DBConnection connection = new DBConnection();
         logger.info("Successfully established DB connection.");
-                   
+        
+        // Index item to DB
         if (connection.indexItem(item)) {
             logger.info("Successfully saved the item in DB.");
             RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));

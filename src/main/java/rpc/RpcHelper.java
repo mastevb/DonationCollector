@@ -158,11 +158,9 @@ public class RpcHelper {
     public static String getUsername(HttpServletRequest request) {
     	// Get token in header
     	String username = "";
-    	String authorization = request.getHeader("Authorization");
-    	String tokenStr = authorization.substring("Bearer ".length());
-    	// tokenStr = CognitoClient.generateToken();  // for tests
+    	String tokenStr = CognitoClient.getTokenFromRequest(request);
     	// Decode token
-    	username = CognitoClient.getContentFromToken(tokenStr, "sub");
+    	username = CognitoClient.getContentFromToken(tokenStr, "cognito:username");
         return username;
     }
     

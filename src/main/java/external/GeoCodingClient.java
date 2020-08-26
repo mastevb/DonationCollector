@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import map.GoogleMapUtil;
-import rpc.RpcHelper;
 
 public class GeoCodingClient {
 	private static final String URL_TEMPLATE = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s";

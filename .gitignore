@@ -2,4 +2,6 @@
 .DS_Store
 .idea
 .class
+S3Util.java
 /target/
+/bin/
