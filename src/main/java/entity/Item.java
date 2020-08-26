@@ -17,7 +17,7 @@ public class Item {
 
     private String NGOID;
     private String scheduleID;
-    private Date scheduleTime;
+    private String scheduleTime;
     private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
 
     public String getName() {
@@ -52,7 +52,7 @@ public class Item {
         return scheduleID;
     }
 
-    public Date getScheduleTime() {
+    public String getScheduleTime() {
         return scheduleTime;
     }
 

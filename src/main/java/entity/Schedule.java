@@ -9,7 +9,7 @@ public class Schedule {
     private String scheduleID;
     private String NGOID;
     private String scheduleTime;
-    private ArrayList<String> ItemIDList;
+    private String[] ItemIDList;
     private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
 
     public String getScheduleID() {
@@ -24,7 +24,7 @@ public class Schedule {
         return scheduleTime;
     }
 
-    public ArrayList<String> getItemIDList() {
+    public String[] getItemIDList() {
         return ItemIDList;
     }
 
@@ -57,7 +57,7 @@ public class Schedule {
     public static class ScheduleBuilder {
         private String scheduleID;
         private String NGOID;
-        private ArrayList<String> ItemIDList;
+        private String[] ItemIDList;
         private String scheduleTime;
         private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
 
@@ -74,8 +74,8 @@ public class Schedule {
             this.NGOID = NGOID;
         }
 
-        public void setItemIDList(ArrayList<String> itemIDList) {
-            ItemIDList = itemIDList;
+        public void setItemIDList(String[] items) {
+            ItemIDList = items;
         }
 
         public void setScheduleTime(String string) {

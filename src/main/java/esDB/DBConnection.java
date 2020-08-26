@@ -100,7 +100,7 @@ public class DBConnection {
 
    
 
-	public boolean updateItems(List<String> items, String scheduleId, String scheduleTime, String NGOID) throws IOException {
+	public boolean updateItems(String[] items, String scheduleId, String scheduleTime, String NGOID) throws IOException {
 		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
 		// update request
 		UpdateByQueryRequest updateRequest = new UpdateByQueryRequest(esDBUtil.index);

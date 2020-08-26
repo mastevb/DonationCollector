@@ -178,9 +178,9 @@ public class RpcHelper {
 		
 		JSONObject input = new JSONObject(IOUtils.toString(request.getReader()));
 		JSONArray array = input.getJSONArray("itemIds");
-		ArrayList<String> items = new ArrayList<>();
+		String[] items = new String[array.length()];
 		for(int i = 0; i < array.length(); i++) {
-			items.add(array.getString(i));
+			items[i] = array.getString(i);
 		}
 		
 		ScheduleBuilder builder = new ScheduleBuilder();

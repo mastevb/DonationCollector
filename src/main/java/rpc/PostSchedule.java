@@ -54,7 +54,7 @@ public class PostSchedule extends HttpServlet {
 		DBConnection connection = new DBConnection();
 		
 		//update each item within ItemIdList with ngo name, schedule time, status,
-		List<String> items = schedule.getItemIDList();
+		String[] items = schedule.getItemIDList();
 		String scheduleId = schedule.getScheduleID();
 		String scheduleTime = schedule.getScheduleTime(); 
 		String NGOID = schedule.getNGOID();
