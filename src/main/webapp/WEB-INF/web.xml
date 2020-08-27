@@ -31,6 +31,12 @@
   	<description></description>
   	<servlet-class>rpc.CompleteSchdule</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>GetItem</servlet-name>
+  	<display-name>GetItem</display-name>
+  	<description></description>
+  	<servlet-class>rpc.GetItem</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>PostItem</servlet-name>
   	<url-pattern>/donor/new_item</url-pattern>
@@ -46,5 +52,9 @@
   <servlet-mapping>
   	<servlet-name>CompleteSchdule</servlet-name>
   	<url-pattern>/ngo/complete_schedule</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>GetItem</servlet-name>
+  	<url-pattern>/donor/my_item</url-pattern>
   </servlet-mapping>
 </web-app>
