@@ -66,9 +66,9 @@ public class CompleteSchdule extends HttpServlet {
 			boolean itemResponseStatus = connection.MarkCompleteItem(scheduleID);
 			boolean ngoResponseStatus = connection.MarkCompleteNGO(scheduleID);
 			if (itemResponseStatus && ngoResponseStatus) {
-				response.getWriter().append("Succeed at: ").append(request.getContextPath());
+				RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
 			} else {
-				response.getWriter().append("Failed at: ").append(request.getContextPath());
+				RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
 			}
 		} else {
 			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));

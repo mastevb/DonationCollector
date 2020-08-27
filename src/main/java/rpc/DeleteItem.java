@@ -64,9 +64,9 @@ public class DeleteItem extends HttpServlet {
 			//Get delete response
             boolean responseStatus = connection.deleteDonorItem(itemID);
     		if (responseStatus) {
-    			response.getWriter().append("Succeed at: ").append(request.getContextPath());
+    			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
     		} else {
-    			response.getWriter().append("Failed at: ").append(request.getContextPath());
+    			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
     		}
         } else {
             RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
