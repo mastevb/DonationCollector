@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import entity.Item;
 import esDB.DBConnection;
+import external.CognitoClient;
 
 /**
  * Servlet implementation class PostItem
@@ -40,14 +41,23 @@ public class MySchedule extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String userName = RpcHelper.getUsername(request);
-        if (userName == null) {
-            response.setStatus(403);
-            RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
-            return;
+		// Verify the token
+		String tokenStr = CognitoClient.getTokenFromRequest(request);
+		if (!CognitoClient.verifyJwt(tokenStr)) {
+			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
+			return;
+		}
+		
+		// Get username
+		String username = RpcHelper.getNGOID(request);
+        if (username == null) {
+        	logger.error("Got no username.");
+        	RpcHelper.writeJsonObject(response, new JSONObject().put("result", "FAILED"));
+        	return;
         }
+        
         DBConnection conn = new DBConnection();
-        List<Schedule> schedules = conn.getSchedule(userName);
+        List<Schedule> schedules = conn.getSchedule(username);
         JSONArray array = new JSONArray();
         for (Schedule s : schedules) {
             array.put(s.toJSONObject());

@@ -165,6 +165,16 @@ public class RpcHelper {
         return username;
     }
     
+    //get NGO name from Cognito
+    public static String getNGOID(HttpServletRequest request) {
+    	// Get token in header
+    	String NGOID = "";
+    	String tokenStr = CognitoClient.getTokenFromRequest(request);
+    	// Decode token
+    	NGOID = CognitoClient.getContentFromToken(tokenStr, "given_name");
+        return NGOID;
+    }
+    
     // Get current date
     public static String getCurDate() {
     	ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of( "America/Los_Angeles" ));

@@ -109,16 +109,18 @@ public class DBConnection {
 		List<Schedule> result = new ArrayList<>();
 		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
 		logger.info("Successfully built client for DB.");
-		SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-		sourceBuilder.query(QueryBuilders.termQuery("username", "username"));
-		sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("NGOID", username);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(matchQueryBuilder);
 		SearchRequest searchRequest = new SearchRequest();
 		searchRequest.indices("schedule");
-		searchRequest.source(sourceBuilder);
+		searchRequest.source(searchSourceBuilder);
 		SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+		
 		// get access to the returned documents
 		SearchHits hits = searchResponse.getHits();
 		SearchHit[] searchHits = hits.getHits();
+		System.out.println("!!!!!" + searchHits.length);
 		// build and add
 		for (SearchHit hit : searchHits) {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
@@ -163,7 +165,7 @@ public class DBConnection {
 		// Get access to the returned documents
 		SearchHits hits = searchResponse.getHits();
 		SearchHit[] searchHits = hits.getHits();
-		System.out.println(searchHits.length);
+		//System.out.println(searchHits.length);
 		List<Item> itemList = new ArrayList<>();
 		for (SearchHit hit : searchHits) {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();

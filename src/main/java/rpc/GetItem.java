@@ -57,7 +57,6 @@ public class GetItem extends HttpServlet {
 
 		// Write to response
 		List<Item> items = connection.GetItemList(username);
-		System.out.println(items.size());
 		JSONArray array = new JSONArray();
 		for (Item item : items) {
 			array.put(item.toJSONObject());
