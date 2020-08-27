@@ -127,6 +127,7 @@ public class DBConnection {
 			Schedule.ScheduleBuilder builder = new Schedule.ScheduleBuilder();
 			// build
 			builder.setNGOID((String) sourceAsMap.get("NGOID"));
+			
 			Object ids = sourceAsMap.get("ITEM_ID[]");
 			ArrayList<String> itemIds = new ArrayList<>();
 			if (ids instanceof ArrayList<?>) {
@@ -141,16 +142,68 @@ public class DBConnection {
 					}
 				}
 			}
-			builder.setItemIDList(itemIds);
-			builder.setScheduleID((String) sourceAsMap.get("Schedule_ID"));
-			builder.setScheduleTime((String) sourceAsMap.get("time"));
+			// builder.setItemIDList(itemIds);
+			
+			ArrayList<Item> itemList = new ArrayList<>(); 
+			for (String id : itemIds) {
+				Item it = DBConnection.GetItemByID(id);
+				if (it != null) {
+					itemList.add(it); 
+				}
+			}
+			// System.out.println(itemList.size());
+			builder.setItemList(itemList);
+			
+			builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
+			builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
 			builder.setStatus((int) sourceAsMap.get("status"));
 			Schedule s = builder.build();
 			result.add(s);
 		}
 		return result;
 	}
-
+	
+	// Get one Item by Item ID
+	public static Item GetItemByID(String itemID) throws IOException {
+		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("itemID", itemID);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(matchQueryBuilder);
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.indices("item");
+		searchRequest.source(searchSourceBuilder);
+		SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+		
+		// Get access to the returned documents
+		SearchHits hits = searchResponse.getHits();
+		SearchHit[] searchHits = hits.getHits();
+		// System.out.println(searchHits.length);
+		// System.out.println(itemID);
+		if (searchHits.length > 0) {
+			SearchHit hit = searchHits[0];
+			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+			ItemBuilder builder = new ItemBuilder();
+	
+			builder.setName((String) sourceAsMap.get("name"));
+			//builder.setResidentID((String) sourceAsMap.get("residentID"));
+			builder.setDescription((String) sourceAsMap.get("description"));
+			builder.setImageUrl((String) sourceAsMap.get("imageUrl"));
+			builder.setAddress((String) sourceAsMap.get("address"));
+			// builder.setLocation((GeoPoint) sourceAsMap.get("location"));
+			//builder.setNGOID((String) sourceAsMap.get("NGOID"));
+			//builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
+			//builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
+			//builder.setStatus((int) sourceAsMap.get("status"));
+			//builder.setItemID((String) sourceAsMap.get("id"));
+	
+			Item item = builder.build();
+			return item;
+		} else {
+			System.out.println("SIZE IS WRONG: " + searchHits.length);
+			return null;
+		}
+	}
+	
 	// Get Item List.
 	public List<Item> GetItemList(String residentID) throws IOException {
 		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
@@ -191,7 +244,7 @@ public class DBConnection {
 	}
 
 	// Adds the interpreter to the ES REST client
-	public RestHighLevelClient esClient(String serviceName, String region) {
+	public static RestHighLevelClient esClient(String serviceName, String region) {
 		AWS4Signer signer = new AWS4Signer();
 		signer.setServiceName(serviceName);
 		signer.setRegionName(region);

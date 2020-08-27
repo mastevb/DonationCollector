@@ -26,6 +26,12 @@
     	<description></description>
     	<servlet-class>rpc.GetItem</servlet-class>
     </servlet>
+    <servlet>
+    	<servlet-name>SearchItem</servlet-name>
+    	<display-name>SearchItem</display-name>
+    	<description></description>
+    	<servlet-class>rpc.SearchItem</servlet-class>
+    </servlet>
     <servlet-mapping>
   	<servlet-name>PostItem</servlet-name>
   	<url-pattern>/donor/new_item</url-pattern>
@@ -36,6 +42,10 @@
     <servlet-mapping>
     	<servlet-name>GetItem</servlet-name>
     	<url-pattern>/donor/my_item</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>SearchItem</servlet-name>
+    	<url-pattern>/ngo/search_item</url-pattern>
     </servlet-mapping>
 
 </web-app>
