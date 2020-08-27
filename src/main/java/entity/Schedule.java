@@ -11,6 +11,8 @@ public class Schedule {
     private String scheduleTime;
     private String[] ItemIDList;
     private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
+    private ArrayList<Item> itemList; // optional for My_schedule
+	private String NGOUsername;
 
     public String getScheduleID() {
         return scheduleID;
@@ -32,6 +34,13 @@ public class Schedule {
         return status;
     }
 
+    public ArrayList<Item> getItemList() {
+        return itemList;
+    }
+    
+    public String getNGOUsername() {
+    	return NGOUsername;
+    }
 
     private Schedule(ScheduleBuilder builder) {
         this.scheduleID = builder.scheduleID;
@@ -39,18 +48,21 @@ public class Schedule {
         this.ItemIDList = builder.ItemIDList;
         this.scheduleTime = builder.scheduleTime;
         this.status = builder.status;
+        this.itemList = builder.itemList;
+        this.NGOUsername = builder.NGOUsername;
     }
 
-
+    
     public JSONObject toJSONObject() {
         JSONObject obj = new JSONObject();
         obj.put("scheduleID", scheduleID);
-        obj.put("NGOID", NGOID);
-        obj.put("ITEM_ID[]", ItemIDList);
         obj.put("scheduleTime", scheduleTime);
-        obj.put("item status", status);
+        obj.put("status", status);
+        obj.put("itemList", itemList);
         return obj;
     }
+    
+    
 
 
 
@@ -60,6 +72,8 @@ public class Schedule {
         private String[] ItemIDList;
         private String scheduleTime;
         private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
+        private ArrayList<Item> itemList; // optional for My_schedule
+		private String NGOUsername;
 
 
         public Schedule build() {
@@ -85,5 +99,15 @@ public class Schedule {
         public void setStatus(int status) {
             this.status = status;
         }
+
+		public void setItemList(ArrayList<Item> itemList) {
+			this.itemList = itemList;
+			
+		}
+
+		public void setNGOUsername(String NGOUsername) {
+			this.NGOUsername = NGOUsername;
+			
+		}
     }
 }

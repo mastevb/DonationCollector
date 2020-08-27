@@ -27,6 +27,7 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
@@ -100,6 +101,7 @@ public class DBConnection {
             scheduleBuilder.field("ITEM_ID[]", schedule.getItemIDList());
             scheduleBuilder.field("scheduleTime", schedule.getScheduleTime());
             scheduleBuilder.field("status", schedule.getStatus());
+            scheduleBuilder.field("NGOUsername", schedule.getNGOUsername());
         }
         scheduleBuilder.endObject();
 
@@ -189,6 +191,114 @@ public class DBConnection {
 		}
 	
 	}
+	
+	
+	// Get schedule list
+		public List<Schedule> getSchedule(String username) throws IOException {
+			List<Schedule> result = new ArrayList<>();
+			RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+			logger.info("Successfully built client for DB.");
+			MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("NGOUsername", username);
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.query(matchQueryBuilder);
+			SearchRequest searchRequest = new SearchRequest();
+			searchRequest.indices("schedule");
+			searchRequest.source(searchSourceBuilder);
+			SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+			
+			// get access to the returned documents
+			SearchHits hits = searchResponse.getHits();
+			SearchHit[] searchHits = hits.getHits();
+			//System.out.println("!!!!!" + searchHits.length);
+			// build and add
+			for (SearchHit hit : searchHits) {
+				Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+				Schedule.ScheduleBuilder builder = new Schedule.ScheduleBuilder();
+				// build
+				builder.setNGOID((String) sourceAsMap.get("NGOID"));
+				
+				Object ids = sourceAsMap.get("ITEM_ID[]");
+				ArrayList<String> itemIds = new ArrayList<>();
+				if (ids instanceof ArrayList<?>) {
+					for (int i = 0; i < ((ArrayList<?>) ids).size(); i++) {
+						// Still not enough for a type.
+						Object o = ((ArrayList<?>) ids).get(i);
+						if (o instanceof String) {
+							// Here we go!
+							String v = (String) o;
+							// use v
+							itemIds.add(v);
+						}
+					}
+				}
+				// builder.setItemIDList(itemIds);
+				
+				ArrayList<Item> itemList = new ArrayList<>(); 
+				for (String id : itemIds) {
+					Item it = GetItemByID(id);
+					if (it != null) {
+						itemList.add(it); 
+					}
+				}
+				// System.out.println(itemList.size());
+				builder.setItemList(itemList);
+				
+				builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
+				builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
+				builder.setStatus((int) sourceAsMap.get("status"));
+				Schedule s = builder.build();
+				result.add(s);
+			}
+			return result;
+		}
+		
+		// Get one Item by Item ID
+		public Item GetItemByID(String itemID) throws IOException {
+			RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+			MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("itemID", itemID);
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.query(matchQueryBuilder);
+			SearchRequest searchRequest = new SearchRequest();
+			searchRequest.indices("item");
+			searchRequest.source(searchSourceBuilder);
+			SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+			
+			// Get access to the returned documents
+			SearchHits hits = searchResponse.getHits();
+			SearchHit[] searchHits = hits.getHits();
+			// System.out.println(searchHits.length);
+			// System.out.println(itemID);
+			if (searchHits.length > 0) {
+				SearchHit hit = searchHits[0];
+				Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+				ItemBuilder builder = new ItemBuilder();
+		
+				builder.setName((String) sourceAsMap.get("name"));
+				//builder.setResidentID((String) sourceAsMap.get("residentID"));
+				builder.setDescription((String) sourceAsMap.get("description"));
+				builder.setImageUrl((String) sourceAsMap.get("imageUrl"));
+				builder.setAddress((String) sourceAsMap.get("address"));
+				// builder.setLocation((GeoPoint) sourceAsMap.get("location"));
+				//builder.setNGOID((String) sourceAsMap.get("NGOID"));
+				//builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
+				//builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
+				//builder.setStatus((int) sourceAsMap.get("status"));
+				//builder.setItemID((String) sourceAsMap.get("id"));
+		
+				Item item = builder.build();
+				return item;
+			} else {
+				System.out.println("SIZE IS WRONG: " + searchHits.length);
+				return null;
+			}
+		}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	// Get Item List.

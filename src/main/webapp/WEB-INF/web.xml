@@ -37,6 +37,12 @@
   	<description></description>
   	<servlet-class>rpc.GetItem</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>MySchedule</servlet-name>
+  	<display-name>MySchedule</display-name>
+  	<description></description>
+  	<servlet-class>rpc.MySchedule</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>PostItem</servlet-name>
   	<url-pattern>/donor/new_item</url-pattern>
@@ -56,5 +62,9 @@
   <servlet-mapping>
   	<servlet-name>GetItem</servlet-name>
   	<url-pattern>/donor/my_item</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>MySchedule</servlet-name>
+  	<url-pattern>/ngo/my_schedule</url-pattern>
   </servlet-mapping>
 </web-app>

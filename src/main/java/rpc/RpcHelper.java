@@ -192,6 +192,8 @@ public class RpcHelper {
         	logger.error("Failed to get username.");
         	return (Schedule) null;
         }
+        String NGOUsername = getUsername(request);
+        builder.setNGOUsername(NGOUsername);
         builder.setScheduleID(idGenerator());
         builder.setNGOID(NGOID);
         builder.setItemIDList(items);
