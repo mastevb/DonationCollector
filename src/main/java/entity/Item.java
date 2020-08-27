@@ -97,7 +97,7 @@ public class Item {
         
         obj.put("scheduleTime", scheduleTime);
         obj.put("scheduleID", scheduleID);
-        obj.put("item status", status);
+        obj.put("status", status);
         return obj;
     }
 

@@ -18,9 +18,11 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.geo.GeoPoint;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
@@ -39,6 +41,7 @@ import entity.Schedule;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 
 public class DBConnection {
 
@@ -185,16 +188,9 @@ public class DBConnection {
 			ItemBuilder builder = new ItemBuilder();
 	
 			builder.setName((String) sourceAsMap.get("name"));
-			//builder.setResidentID((String) sourceAsMap.get("residentID"));
 			builder.setDescription((String) sourceAsMap.get("description"));
 			builder.setImageUrl((String) sourceAsMap.get("imageUrl"));
 			builder.setAddress((String) sourceAsMap.get("address"));
-			// builder.setLocation((GeoPoint) sourceAsMap.get("location"));
-			//builder.setNGOID((String) sourceAsMap.get("NGOID"));
-			//builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
-			//builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
-			//builder.setStatus((int) sourceAsMap.get("status"));
-			//builder.setItemID((String) sourceAsMap.get("id"));
 	
 			Item item = builder.build();
 			return item;
@@ -242,7 +238,48 @@ public class DBConnection {
 
 		return itemList;
 	}
+	
+	// Get Item List By Geo point.
+	public List<Item> GetItemListByGeo(GeoPoint point) throws IOException {
+		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
+		GeoDistanceQueryBuilder qb = QueryBuilders.geoDistanceQuery("location")               
+				.point(point.getLat(), point.getLon())                                          
+				.distance(200, DistanceUnit.KILOMETERS); 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(qb);
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.indices("item");
+		searchRequest.source(searchSourceBuilder);
+		SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
 
+		// Get access to the returned documents
+		SearchHits hits = searchResponse.getHits();
+		SearchHit[] searchHits = hits.getHits();
+		// System.out.println(searchHits.length);
+		List<Item> itemList = new ArrayList<>();
+		for (SearchHit hit : searchHits) {
+			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+			ItemBuilder builder = new ItemBuilder();
+			
+			builder.setItemID((String) sourceAsMap.get("itemID"));
+			builder.setName((String) sourceAsMap.get("name"));
+			builder.setResidentID((String) sourceAsMap.get("residentID"));
+			builder.setDescription((String) sourceAsMap.get("description"));
+			builder.setImageUrl((String) sourceAsMap.get("imageUrl"));
+			builder.setAddress((String) sourceAsMap.get("address"));
+			// builder.setLocation((GeoPoint) sourceAsMap.get("location"));
+			builder.setNGOID((String) sourceAsMap.get("NGOID"));
+			builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
+			builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
+			builder.setStatus((int) sourceAsMap.get("status"));
+
+			Item item = builder.build();
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+		
 	// Adds the interpreter to the ES REST client
 	public static RestHighLevelClient esClient(String serviceName, String region) {
 		AWS4Signer signer = new AWS4Signer();

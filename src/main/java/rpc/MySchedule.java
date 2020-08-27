@@ -25,7 +25,7 @@ import external.CognitoClient;
 @MultipartConfig
 public class MySchedule extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(PostItem.class);
+    private static final Logger logger = Logger.getLogger(MySchedule.class);
     // TODO: Update the upload path according to the server
     private static final String uploadPath = "D:\\LaiOffer\\Project_Class\\Apache-Tomcat\\apache-tomcat-9.0.37\\webapps\\data\\";
 

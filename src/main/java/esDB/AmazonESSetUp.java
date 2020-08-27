@@ -1,7 +1,10 @@
 package esDB;
 
+import org.elasticsearch.common.Strings;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -32,48 +35,143 @@ public class AmazonESSetUp {
 
     public static void main(String[] args) throws IOException {
         RestHighLevelClient esClient = esClient(serviceName, region);
-
+        CreateIndexRequest requestItem = new CreateIndexRequest("item");
+        
         // Creates Item Index
         XContentBuilder itemBuilder = XContentFactory.jsonBuilder();
         itemBuilder.startObject();
         {
-            itemBuilder.field("ItemID", "keyword").field("index", "true");
-            itemBuilder.field("name", "string");
-            itemBuilder.field("residentID", "keyword");
-            itemBuilder.field("description", "string");
-            itemBuilder.field("imageUrl", "string");
-            itemBuilder.field("address", "string");
-            itemBuilder.field("location", new GeoPoint());
-            itemBuilder.field("NGOID", "keyword");
-            itemBuilder.field("scheduleID", "keyword");
-            itemBuilder.field("scheduleTime", "keyword");
-            itemBuilder.field("postTime", "keyword");
-            itemBuilder.field("status", 0);
+        	itemBuilder.startObject("ItemID");
+            {
+            	itemBuilder.field("type", "keyword");
+            	itemBuilder.field("index", "true");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("name");
+            {
+            	itemBuilder.field("type", "text");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("residentID");
+            {
+            	itemBuilder.field("type", "keyword");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("description");
+            {
+            	itemBuilder.field("type", "text");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("imageUrl");
+            {
+            	itemBuilder.field("type", "text");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("address");
+            {
+            	itemBuilder.field("type", "text");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("location");
+            {
+            	itemBuilder.field("type", "geo_point");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("NGOID");
+            {
+            	itemBuilder.field("type", "keyword");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("scheduleID");
+            {
+            	itemBuilder.field("type", "keyword");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("scheduleTime");
+            {
+            	itemBuilder.field("type", "text");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("postTime");
+            {
+            	itemBuilder.field("type", "text");
+            }
+            itemBuilder.endObject();
+            
+        	itemBuilder.startObject("status");
+            {
+            	itemBuilder.field("type", "integer");
+            }
+            itemBuilder.endObject();
         }
         itemBuilder.endObject();
-
-        // Form the indexing request, send it, and print the response
-        IndexRequest request = new IndexRequest("item", type, id).source(itemBuilder);
-        IndexResponse response = esClient.index(request, RequestOptions.DEFAULT);
-        System.out.println(response.toString());
-
+        String json = Strings.toString(itemBuilder);
+        System.out.println(json);
+        requestItem.mapping("properties", itemBuilder);
+        
+        CreateIndexResponse createIndexResponse = esClient.indices().create(requestItem, RequestOptions.DEFAULT);
+        System.out.println(createIndexResponse.toString());
+        
+        
         // Creates Schedule Index
+        CreateIndexRequest requestSchedule = new CreateIndexRequest("schedule");
         XContentBuilder scheduleBuilder = XContentFactory.jsonBuilder();
         scheduleBuilder.startObject();
         {
-            scheduleBuilder.field("scheduleID", "keyword");
-            scheduleBuilder.field("NGOID", "keyword");
-            scheduleBuilder.field("ITEM_ID[]", "text");
-            scheduleBuilder.field("scheduleTime", "keyword");
-            scheduleBuilder.field("status", 0);
+        	scheduleBuilder.startObject("scheduleID");
+            {
+            	scheduleBuilder.field("type", "keyword");
+            }
+            scheduleBuilder.endObject();
+            
+            scheduleBuilder.startObject("NGOID");
+            {
+            	scheduleBuilder.field("type", "keyword");
+            }
+            scheduleBuilder.endObject();
+            
+            scheduleBuilder.startObject("ITEM_ID[]");
+            {
+            	scheduleBuilder.field("type", "keyword");
+            }
+            scheduleBuilder.endObject();
+            
+            scheduleBuilder.startObject("scheduleTime");
+            {
+            	scheduleBuilder.field("type", "text");
+            }
+            scheduleBuilder.endObject();
+            
+            scheduleBuilder.startObject("status");
+            {
+            	scheduleBuilder.field("type", "integer");
+            }
+            scheduleBuilder.endObject();
+            
+            //scheduleBuilder.field("scheduleID", "keyword");
+            //scheduleBuilder.field("NGOID", "keyword");
+            //scheduleBuilder.field("ITEM_ID[]", "text");
+            //scheduleBuilder.field("scheduleTime", "keyword");
+            //scheduleBuilder.field("status", 0);
         }
         scheduleBuilder.endObject();
+        String json1 = Strings.toString(scheduleBuilder);
+        System.out.println(json1);
+        requestSchedule.mapping("properties", scheduleBuilder);
 
         // Form the indexing request, send it, and print the response
-        request = new IndexRequest("schedule", type, id).source(scheduleBuilder);
-        response = esClient.index(request, RequestOptions.DEFAULT);
-
-        System.out.println(response.toString());
+        createIndexResponse = esClient.indices().create(requestSchedule, RequestOptions.DEFAULT);
+        System.out.println(createIndexResponse.toString());
     }
 
     // Adds the interceptor to the ES REST client
