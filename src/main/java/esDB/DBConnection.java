@@ -120,7 +120,7 @@ public class DBConnection {
 		// get access to the returned documents
 		SearchHits hits = searchResponse.getHits();
 		SearchHit[] searchHits = hits.getHits();
-		System.out.println("!!!!!" + searchHits.length);
+		//System.out.println("!!!!!" + searchHits.length);
 		// build and add
 		for (SearchHit hit : searchHits) {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
