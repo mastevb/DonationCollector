@@ -46,7 +46,8 @@ public class AmazonESSetUp {
             itemBuilder.field("location", new GeoPoint());
             itemBuilder.field("NGOID", "keyword");
             itemBuilder.field("scheduleID", "keyword");
-            itemBuilder.timeField("scheduleTime", new Date());
+            itemBuilder.field("scheduleTime", "keyword");
+            itemBuilder.field("postTime", "keyword");
             itemBuilder.field("status", 0);
         }
         itemBuilder.endObject();
@@ -54,7 +55,7 @@ public class AmazonESSetUp {
         // Form the indexing request, send it, and print the response
         IndexRequest request = new IndexRequest("item", type, id).source(itemBuilder);
         IndexResponse response = esClient.index(request, RequestOptions.DEFAULT);
-
+        System.out.println(response.toString());
 
         // Creates Schedule Index
         XContentBuilder scheduleBuilder = XContentFactory.jsonBuilder();
@@ -63,7 +64,7 @@ public class AmazonESSetUp {
             scheduleBuilder.field("scheduleID", "keyword");
             scheduleBuilder.field("NGOID", "keyword");
             scheduleBuilder.field("ITEM_ID[]", "text");
-            scheduleBuilder.field("scheduleTime", new Date());
+            scheduleBuilder.field("scheduleTime", "keyword");
             scheduleBuilder.field("status", 0);
         }
         scheduleBuilder.endObject();

@@ -3,12 +3,11 @@ package entity;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Schedule {
     private String scheduleID;
     private String NGOID;
-    private Date scheduleTime;
+    private String scheduleTime;
     private ArrayList<String> ItemIDList;
     private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
 
@@ -20,7 +19,7 @@ public class Schedule {
         return NGOID;
     }
 
-    public Date getScheduleTime() {
+    public String getScheduleTime() {
         return scheduleTime;
     }
 
@@ -58,7 +57,7 @@ public class Schedule {
         private String scheduleID;
         private String NGOID;
         private ArrayList<String> ItemIDList;
-        private Date scheduleTime;
+        private String scheduleTime;
         private int status;  // 0 for pending, 1 for scheduled, 2 for picked-up
 
 
@@ -78,7 +77,7 @@ public class Schedule {
             ItemIDList = itemIDList;
         }
 
-        public void setScheduleTime(Date scheduleTime) {
+        public void setScheduleTime(String scheduleTime) {
             this.scheduleTime = scheduleTime;
         }
 

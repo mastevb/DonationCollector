@@ -25,7 +25,7 @@ public class PostItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(PostItem.class);
 	// TODO: Update the upload path according to the server
-	private static final String uploadPath = "D:\\LaiOffer\\Project_Class\\Apache-Tomcat\\apache-tomcat-9.0.37\\webapps\\data\\";
+	private static final String uploadPath = "E:\\DonationCollector1\\DonationCollector\\apache-tomcat-9.0.37\\webapps\\data";
        
     /**
      * @see HttpServlet#HttpServlet()

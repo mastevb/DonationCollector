@@ -21,6 +21,7 @@ import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
@@ -140,7 +141,7 @@ public class DBConnection {
 			}
 			builder.setItemIDList(itemIds);
 			builder.setScheduleID((String) sourceAsMap.get("Schedule_ID"));
-			builder.setScheduleTime((Date) sourceAsMap.get("time"));
+			builder.setScheduleTime((String) sourceAsMap.get("time"));
 			builder.setStatus((int) sourceAsMap.get("status"));
 			Schedule s = builder.build();
 			result.add(s);
@@ -151,17 +152,18 @@ public class DBConnection {
 	// Get Item List.
 	public List<Item> GetItemList(String residentID) throws IOException {
 		RestHighLevelClient esClient = esClient(esDBUtil.serviceName, esDBUtil.region);
-		SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-		sourceBuilder.query(QueryBuilders.termQuery("residentID", "residentID"));
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("residentID", residentID);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(matchQueryBuilder);
 		SearchRequest searchRequest = new SearchRequest();
 		searchRequest.indices("item");
-		searchRequest.source(sourceBuilder);
-		sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+		searchRequest.source(searchSourceBuilder);
 		SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
 
 		// Get access to the returned documents
 		SearchHits hits = searchResponse.getHits();
 		SearchHit[] searchHits = hits.getHits();
+		System.out.println(searchHits.length);
 		List<Item> itemList = new ArrayList<>();
 		for (SearchHit hit : searchHits) {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
@@ -172,10 +174,10 @@ public class DBConnection {
 			builder.setDescription((String) sourceAsMap.get("description"));
 			builder.setImageUrl((String) sourceAsMap.get("imageUrl"));
 			builder.setAddress((String) sourceAsMap.get("address"));
-			builder.setLocation((GeoPoint) sourceAsMap.get("location"));
+			//builder.setLocation((GeoPoint) sourceAsMap.get("location"));
 			builder.setNGOID((String) sourceAsMap.get("NGOID"));
 			builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
-			builder.setScheduleTime((Date) sourceAsMap.get("scheduleTime"));
+			builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
 			builder.setStatus((int) sourceAsMap.get("status"));
 			builder.setItemID((String) sourceAsMap.get("id"));
 
