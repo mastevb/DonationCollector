@@ -202,4 +202,14 @@ public class RpcHelper {
         
         return builder.build();
 	}
+
+	//get Address from Cognito
+    public static String getAddress(HttpServletRequest request) {
+    	// Get token in header
+    	String address = "";
+    	String tokenStr = CognitoClient.getTokenFromRequest(request);
+    	// Decode token
+    	address = CognitoClient.getContentFromToken(tokenStr, "address");
+        return address;
+    }
 }

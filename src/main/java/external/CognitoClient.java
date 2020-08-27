@@ -40,9 +40,15 @@ public class CognitoClient {
             String body = new String(base64Url.decode(verify.getPayload()));
             logger.info("JWT Body : " + body);
             try {
-                JSONObject bodyObject = new JSONObject(body);
-                content = bodyObject.getString(key);
-                logger.info("Successfully got " + key + " = " + content);
+            	if (key != "address") {
+	                JSONObject bodyObject = new JSONObject(body);
+	                content = bodyObject.getString(key);
+	                logger.info("Successfully got " + key + " = " + content);
+            	} else {
+            		JSONObject bodyObject = new JSONObject(body);
+            		content = bodyObject.getJSONObject(key).getString("formatted") + "," + bodyObject.getString("custom:city") + "," + bodyObject.getString("custom:state") + " " + bodyObject.getString("custom:postalCode");
+            		logger.info("Successfully got " + key + " = " + content);
+            	}
             } catch (JSONException err) {
                 logger.error("Failed to get " + key + " from token.");
             }
