@@ -375,7 +375,8 @@ public class DBConnection {
 				builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
 				builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
 				builder.setStatus((int) sourceAsMap.get("status"));
-				builder.setItemID((String) sourceAsMap.get("id"));
+				builder.setItemID((String) sourceAsMap.get("itemID"));
+				builder.setPostTime((String)sourceAsMap.get("postTime"));
 
 				Item item = builder.build();
 				itemList.add(item);
