@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,7 @@ import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.json.JSONObject;
 
 import com.amazonaws.auth.AWS4Signer;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -280,7 +282,11 @@ public class DBConnection {
 				builder.setDescription((String) sourceAsMap.get("description"));
 				builder.setImageUrl((String) sourceAsMap.get("imageUrl"));
 				builder.setAddress((String) sourceAsMap.get("address"));
-				// builder.setLocation((GeoPoint) sourceAsMap.get("location"));
+				
+				
+				HashMap<?,?> map = (HashMap<?, ?>) sourceAsMap.get("location");
+				builder.setLocation(new GeoPoint((Double)map.get("lat"), (Double)map.get("lon")));
+				
 				//builder.setNGOID((String) sourceAsMap.get("NGOID"));
 				//builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
 				//builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
@@ -330,6 +336,8 @@ public class DBConnection {
 					builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
 					builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
 					builder.setStatus((int) sourceAsMap.get("status"));
+					HashMap<?,?> map = (HashMap<?, ?>) sourceAsMap.get("location");
+					builder.setLocation(new GeoPoint((Double)map.get("lat"), (Double)map.get("lon")));
 
 					Item item = builder.build();
 					itemList.add(item);	
@@ -375,7 +383,8 @@ public class DBConnection {
 				builder.setScheduleID((String) sourceAsMap.get("scheduleID"));
 				builder.setScheduleTime((String) sourceAsMap.get("scheduleTime"));
 				builder.setStatus((int) sourceAsMap.get("status"));
-				builder.setItemID((String) sourceAsMap.get("id"));
+				builder.setItemID((String) sourceAsMap.get("itemID"));
+				builder.setPostTime((String)sourceAsMap.get("postTime"));
 
 				Item item = builder.build();
 				itemList.add(item);
